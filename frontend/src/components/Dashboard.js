@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function Dashboard() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -13,12 +13,77 @@ export default function Dashboard() {
     { id: 3, text: "Project deadline tomorrow", read: false },
   ]);
 
-  const projects = [
-    { id: 1, name: 'Subtle Boar', date: '21/03/22', views: '10 users', color: 'purple' },
-    { id: 2, name: 'RD Sales', date: '21/03/22', views: '200 users', color: 'purple' },
-    { id: 3, name: 'Upgrade Manager', date: '21/03/22', views: '0 users', color: 'blue' },
-  ];
+const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+ const [name, setName] = useState("");
+  const [tags, setTags] = useState("");
+  const [deadline, setDeadline] = useState("");
+  const [priority, setPriority] = useState("");
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState(null);
 
+  // get logged-in user
+  const user = JSON.parse(localStorage.getItem("user"));
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/project", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        setProjects(data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch projects:", err);
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+const handleSaveProject = async (e) => {
+    e.preventDefault();
+
+    const newProject = {
+      name,
+      tags,
+      projectManager: user?.id, // logged-in user id
+      deadline,
+      priority,
+      description,
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/project/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProject),
+      });
+
+      const data = await res.json();
+      setProjects([...projects, data]); // update UI instantly
+      setShowNewProjectForm(false);
+
+      // reset form
+      setName("");
+      setTags("");
+      setDeadline("");
+      setPriority("");
+      setDescription("");
+      setImage(null);
+    } catch (err) {
+      console.error("Failed to save project:", err);
+    }
+  };
+
+  if (loading) {
+    return <div className="p-6 text-lg">Loading projects...</div>;
+  }
   return (
     <div
       className={`min-h-screen ${
@@ -248,80 +313,74 @@ export default function Dashboard() {
 
               {/* Projects Grid */}
               <div className="grid md:grid-cols-3 gap-6 mb-8">
-                {projects.map((project) => (
-                  <div key={project.id} className="relative group">
-                    <div
-                      className={`border rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-300 hover:scale-105 cursor-pointer ${
-                        isDarkMode
-                          ? "border-gray-700/50 hover:shadow-lg hover:bg-gray-800/70"
-                          : "border-gray-200 shadow-md hover:shadow-xl bg-white/90 hover:bg-white"
-                      }`}
-                      style={{
-                        backgroundColor: isDarkMode
-                          ? "rgba(26,26,46,0.8)"
-                          : undefined,
-                      }}
-                    >
-                      <div
-                        className={`p-4 border-b ${
-                          isDarkMode ? "border-gray-700/50" : "border-gray-200"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div
-                            className={`font-semibold text-lg ${
-                              isDarkMode ? "text-white" : "text-gray-800"
-                            }`}
-                          >
-                            {project.name}
-                          </div>
-                          <div
-                            className={`w-3 h-3 rounded-full ${
-                              project.color === "purple"
-                                ? "bg-purple-500"
-                                : "bg-blue-500"
-                            }`}
-                          ></div>
-                        </div>
-                      </div>
-                      <div className="p-4 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span
-                            className={`text-sm font-medium ${
-                              isDarkMode ? "text-gray-300" : "text-gray-600"
-                            }`}
-                          >
-                            Views:
-                          </span>
-                          <span
-                            className={`text-sm font-semibold ${
-                              isDarkMode ? "text-white" : "text-gray-800"
-                            }`}
-                          >
-                            {project.views}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span
-                            className={`text-sm font-medium ${
-                              isDarkMode ? "text-gray-300" : "text-gray-600"
-                            }`}
-                          >
-                            Date:
-                          </span>
-                          <span
-                            className={`text-sm font-semibold ${
-                              isDarkMode ? "text-white" : "text-gray-800"
-                            }`}
-                          >
-                            {project.date}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+  {projects.map((project) => (
+    <div key={project._id} className="relative group">
+      <div
+        className={`border rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-300 hover:scale-105 cursor-pointer ${
+          isDarkMode
+            ? "border-gray-700/50 hover:shadow-lg hover:bg-gray-800/70"
+            : "border-gray-200 shadow-md hover:shadow-xl bg-white/90 hover:bg-white"
+        }`}
+        style={{
+          backgroundColor: isDarkMode ? "rgba(26,26,46,0.8)" : undefined,
+        }}
+      >
+        <div
+          className={`p-4 border-b ${
+            isDarkMode ? "border-gray-700/50" : "border-gray-200"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div
+              className={`font-semibold text-lg ${
+                isDarkMode ? "text-white" : "text-gray-800"
+              }`}
+            >
+              {project.name}
+            </div>
+          </div>
+        </div>
+        <div className="p-4 space-y-2">
+          <div className="flex items-center justify-between">
+            <span
+              className={`text-sm font-medium ${
+                isDarkMode ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              Deadline:
+            </span>
+            <span
+              className={`text-sm font-semibold ${
+                isDarkMode ? "text-white" : "text-gray-800"
+              }`}
+            >
+              {project.deadline
+                ? new Date(project.deadline).toLocaleDateString()
+                : "No deadline"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span
+              className={`text-sm font-medium ${
+                isDarkMode ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              Priority:
+            </span>
+            <span
+              className={`text-sm font-semibold ${
+                isDarkMode ? "text-white" : "text-gray-800"
+              }`}
+            >
+              {project.priority}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
             </>
           ) : (
             <>
@@ -337,21 +396,26 @@ export default function Dashboard() {
                 <div className="space-x-2">
                   <button
                     onClick={() => setShowNewProjectForm(false)}
-                    className="px-4 py-2 bg-gray-500 rounded-lg hover:bg-gray-600 text-white shadow-md"
+                    className="px-4 py-2 bg-gray-500 rounded-lg hover:bg-gray-600 text-white"
                   >
                     Discard
                   </button>
-                  <button className="px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700 text-white shadow-md">
+                  <button
+                    onClick={handleSaveProject}
+                    className="px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700 text-white"
+                  >
                     Save
                   </button>
                 </div>
               </div>
 
-              <form className="space-y-6 max-w-2xl">
+              <form onSubmit={handleSaveProject} className="space-y-6 max-w-2xl">
                 <div>
                   <label className="block mb-1 font-semibold">Name</label>
                   <input
                     type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-transparent"
                   />
                 </div>
@@ -360,17 +424,19 @@ export default function Dashboard() {
                   <label className="block mb-1 font-semibold">Tags</label>
                   <input
                     type="text"
+                    value={tags}
+                    onChange={(e) => setTags(e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-transparent"
                   />
                 </div>
 
                 <div>
-                  <label className="block mb-1 font-semibold">
-                    Project Manager
-                  </label>
+                  <label className="block mb-1 font-semibold">Project Manager</label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
+                    value={user?.id || ""}
+                    disabled
+                    className="w-full px-4 py-2 rounded-lg border bg-gray-200 text-gray-700"
                   />
                 </div>
 
@@ -378,6 +444,8 @@ export default function Dashboard() {
                   <label className="block mb-1 font-semibold">Deadline</label>
                   <input
                     type="date"
+                    value={deadline}
+                    onChange={(e) => setDeadline(e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-transparent"
                   />
                 </div>
@@ -386,27 +454,53 @@ export default function Dashboard() {
                   <label className="block mb-1 font-semibold">Priority</label>
                   <div className="space-x-4">
                     <label>
-                      <input type="radio" name="priority" /> Low
+                      <input
+                        type="radio"
+                        name="priority"
+                        value="Low"
+                        checked={priority === "Low"}
+                        onChange={(e) => setPriority(e.target.value)}
+                      />{" "}
+                      Low
                     </label>
                     <label>
-                      <input type="radio" name="priority" /> Medium
+                      <input
+                        type="radio"
+                        name="priority"
+                        value="Medium"
+                        checked={priority === "Medium"}
+                        onChange={(e) => setPriority(e.target.value)}
+                      />{" "}
+                      Medium
                     </label>
                     <label>
-                      <input type="radio" name="priority" /> High
+                      <input
+                        type="radio"
+                        name="priority"
+                        value="High"
+                        checked={priority === "High"}
+                        onChange={(e) => setPriority(e.target.value)}
+                      />{" "}
+                      High
                     </label>
                   </div>
                 </div>
 
                 <div>
                   <label className="block mb-1 font-semibold">Image</label>
-                  <input type="file" className="w-full" />
+                  <input
+                    type="file"
+                    onChange={(e) => setImage(e.target.files[0])}
+                    className="w-full"
+                  />
                 </div>
 
-                {/* Description */}
                 <div>
                   <label className="block mb-1 font-semibold">Description</label>
                   <textarea
                     rows="4"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-transparent"
                     placeholder="Enter project details..."
                   ></textarea>

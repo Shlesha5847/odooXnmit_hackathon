@@ -1,9 +1,31 @@
 const Project = require("../models/projects");
 
 // ✅ Create Project
+// ✅ Create Project
 exports.createProject = async (req, res) => {
   try {
-    const project = new Project(req.body);
+    let { name, description, tags, projectManager, teamMembers, deadline, priority } = req.body;
+
+    // ensure tags is always an array
+    if (typeof tags === "string") {
+      tags = tags.split(",").map((tag) => tag.trim());
+    }
+
+    // ensure teamMembers is array
+    if (typeof teamMembers === "string") {
+      teamMembers = teamMembers.split(",").map((id) => id.trim());
+    }
+
+    const project = new Project({
+      name,
+      description,
+      tags,
+      projectManager,
+      teamMembers,
+      deadline,
+      priority,
+    });
+
     await project.save();
     res.status(201).json({ success: true, project });
   } catch (error) {
