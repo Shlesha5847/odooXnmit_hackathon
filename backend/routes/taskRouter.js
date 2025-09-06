@@ -2,7 +2,7 @@ const express = require('express');
 const {createTask , editTask, viewTask} = require('../controllers/taskController');
 const router = express.Router();
 
-const isLogged = require("./middlewares/isLoggedin");
+const isLogged = require("../middlewares/isLoggedin");
 
 router.get('/create', isLogged, createTask);
 router.get('/edit', isLogged, editTask);
