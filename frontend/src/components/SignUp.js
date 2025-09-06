@@ -22,6 +22,7 @@ export default function SignUpPage() {
   };
 
   const handleSubmit = async (e) => {
+    console.log("Hello");
     e.preventDefault();
     setError("");
 
@@ -31,6 +32,7 @@ export default function SignUpPage() {
     }
 
     try {
+      console.log("Hello");
       const res = await fetch("http://localhost:5000/signup", { // change to your backend route
         method: "POST",
         headers: {
@@ -150,7 +152,7 @@ export default function SignUpPage() {
               </Link>
             </div>
 
-            <div className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-3">
                   Full Name
@@ -208,12 +210,12 @@ export default function SignUpPage() {
               </div>
 
               <button
-                onClick={handleSubmit}
+                type="submit"
                 className="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
               >
                 Sign Up →
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </main>

@@ -21,7 +21,7 @@ module.exports.registerUser = async function (req, res) {
     // generate JWT token
     const token = generateToken(user);
     res.cookie("token", token, { httpOnly: true });
-    res.json({ message: "User created successfully", user });
+    res.json({ message: "User created successfully", user ,token});
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -40,7 +40,7 @@ module.exports.loginUser = async function (req, res) {
 
     const token = generateToken(user);
     res.cookie("token", token, { httpOnly: true });
-    res.json({ message: "Login successful", user });
+    res.json({ message: "Login successful", user,token });
   } catch (err) {
     res.status(500).send(err.message);
   }

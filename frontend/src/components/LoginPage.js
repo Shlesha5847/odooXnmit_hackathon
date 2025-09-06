@@ -123,7 +123,7 @@ export default function LoginPage() {
 
             </div>
 
-            <div className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-3">
                   Email Address
@@ -159,12 +159,12 @@ export default function LoginPage() {
               </div>
 
               <button
-                onClick={handleSubmit}
+                type ="submit"
                 className="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
               >
                 Sign In →
               </button>
-            </div>
+            </form>
           </div>
         </div>
 

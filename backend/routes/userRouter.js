@@ -6,7 +6,7 @@ router.get("/",function(req,res){
     res.send("working");
 });
 
-router.get('/login',loginUser);
-router.get('/signup',registerUser);
+router.post('/login',loginUser);
+router.post('/signup',registerUser);
 
 module.exports = router;
