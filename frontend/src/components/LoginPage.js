@@ -8,6 +8,7 @@ export default function LoginPage() {
     password: ''
   });
 
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   
   const handleInputChange = (e) => {
@@ -18,11 +19,38 @@ export default function LoginPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login submitted:', formData);
-     
-     navigate("/dashboard");
+    setError('');
+
+    try {
+      const res = await fetch("http://localhost:5000/login", {   // change URL to your backend route
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData),
+        credentials: "include"   // if you're using cookies/JWT
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      console.log("Login success:", data);
+
+      // Example: Save token if backend sends one
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      navigate("/dashboard");
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    }
   };
 
   return (
