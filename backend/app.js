@@ -7,7 +7,12 @@ require("dotenv").config();
 const mongoose = require("./config/mongoose-connect");
 
 
+
 const cors = require('cors'); 
+app.use(cors({
+  origin: 'http://localhost:3000', // frontend URL
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());

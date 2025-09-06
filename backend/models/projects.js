@@ -35,9 +35,7 @@ const projectSchema = new mongoose.Schema(
       enum: ["Low", "Medium", "High"],
       default: "Medium",
     },
-    image: {
-      type: String, // store URL/path of uploaded image
-    },
+    
   },
   { timestamps: true }
 );
