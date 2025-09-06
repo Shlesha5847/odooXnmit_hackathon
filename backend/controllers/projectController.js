@@ -4,7 +4,7 @@ const Project = require("../models/projects");
 // ✅ Create Project
 exports.createProject = async (req, res) => {
   try {
-    let { name, description, tags, projectManager, teamMembers, deadline, priority } = req.body;
+    let { name, description, tags, teamMembers, deadline, priority } = req.body;
 
     // ensure tags is always an array
     if (typeof tags === "string") {
@@ -20,7 +20,7 @@ exports.createProject = async (req, res) => {
       name,
       description,
       tags,
-      projectManager,
+      projectManager : req.user._id,
       teamMembers,
       deadline,
       priority,

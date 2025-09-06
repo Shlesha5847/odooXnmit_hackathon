@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useParams, useLocation } from "react-router-dom";
 
 export default function ProjectDetails() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -7,12 +8,17 @@ export default function ProjectDetails() {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
 
+  const { id } = useParams();
+  const location = useLocation();
+  const project = location.state?.project; // project passed from Dashboard
+
   const [notifications, setNotifications] = useState([
     { id: 1, text: "New bug reported in Stripe Integration", read: false },
     { id: 2, text: "Feedback added on Sales App task", read: false },
     { id: 3, text: "Reminder: Project deadline tomorrow", read: false },
   ]);
 
+  // Dummy tasks - later you can fetch tasks based on project._id
   const tasks = [
     {
       id: 1,
@@ -67,7 +73,7 @@ export default function ProjectDetails() {
                 isDarkMode ? "text-white" : "text-gray-800"
               }`}
             >
-              Company
+              {project?.name || "Project"} {/* Dynamic project name */}
             </h1>
           </div>
 
@@ -230,7 +236,7 @@ export default function ProjectDetails() {
                     isDarkMode ? "text-white" : "text-gray-800"
                   }`}
                 >
-                  ➤ Projects ➤ RD Sales
+                  ➤ Projects ➤ {project?.name || "Loading..."}
                 </h2>
                 <button
                   onClick={() => setShowNewTaskForm(true)}
@@ -239,6 +245,15 @@ export default function ProjectDetails() {
                   + New Task
                 </button>
               </div>
+
+              {/* Project Details */}
+              {project && (
+                <div className="mb-6 p-4 rounded-lg border shadow-md bg-white/10">
+                  <p><strong>Deadline:</strong> {project.deadline ? new Date(project.deadline).toLocaleDateString() : "No deadline"}</p>
+                  <p><strong>Priority:</strong> {project.priority}</p>
+                  <p><strong>Description:</strong> {project.description || "No description"}</p>
+                </div>
+              )}
 
               {/* Tasks Grid */}
               <div className="grid md:grid-cols-3 gap-6">

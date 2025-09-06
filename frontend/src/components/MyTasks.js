@@ -29,10 +29,10 @@ export default function MyTasks() {
     },
     {
       id: 3,
-      title: "Design Mockups",
-      labels: ["UI/UX", "Feedback"],
-      date: "25/03/22",
-      assignedTo: ["Cool Salamander"],
+      title: "Website UI",
+      labels: ["UI"],
+      date: "09/09/2025",
+      assignedTo: ["Tanishka"],
     },
   ];
 

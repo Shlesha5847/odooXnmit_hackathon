@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -21,20 +22,21 @@ const [projects, setProjects] = useState([]);
   const [priority, setPriority] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-
+const navigate = useNavigate();
   // get logged-in user
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch("http://localhost:5000/project", {
+        const res = await fetch("http://localhost:5000/project/view", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
+          credentials :"include",
         });
         const data = await res.json();
-        setProjects(data);
+       setProjects(data.projects || []);
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch projects:", err);
@@ -49,8 +51,8 @@ const handleSaveProject = async (e) => {
 
     const newProject = {
       name,
-      tags,
-      projectManager: user?.id, // logged-in user id
+      tags : tags.split(",").map(t => t.trim()).filter(Boolean) ,
+       // logged-in user id
       deadline,
       priority,
       description,
@@ -62,13 +64,18 @@ const handleSaveProject = async (e) => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials : "include",
         body: JSON.stringify(newProject),
       });
 
       const data = await res.json();
-      setProjects([...projects, data]); // update UI instantly
-      setShowNewProjectForm(false);
-
+      if (data && data.success && data.project) {
+  setProjects([...projects, data.project]);
+  setShowNewProjectForm(false);
+  // reset form...
+} else {
+  alert(data.message || "Failed to save project");
+}
       // reset form
       setName("");
       setTags("");
@@ -239,23 +246,16 @@ const handleSaveProject = async (e) => {
               </div>
             )}
 
-            <button
-              onClick={() => setIsTasksOpen(!isTasksOpen)}
-              className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex justify-between items-center ${
-                isDarkMode
-                  ? "text-gray-300 hover:text-white hover:bg-white/5"
-                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 border border-gray-200"
-              }`}
-            >
-              My Tasks
-              <span
-                className={`font-bold ${
-                  isDarkMode ? "text-gray-400" : "text-gray-600"
-                }`}
-              >
-                {isTasksOpen ? "−" : "+"}
-              </span>
-            </button>
+           <button
+  onClick={() => navigate("/mytasks")}
+  className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex justify-between items-center ${
+    isDarkMode
+      ? "text-gray-300 hover:text-white hover:bg-white/5"
+      : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 border border-gray-200"
+  }`}
+>
+  My Tasks
+</button>
             {isTasksOpen && (
               <div className="pl-4 mt-2 space-y-1">
                 <p
@@ -314,9 +314,13 @@ const handleSaveProject = async (e) => {
               {/* Projects Grid */}
               <div className="grid md:grid-cols-3 gap-6 mb-8">
   {projects.map((project) => (
-    <div key={project._id} className="relative group">
+    <div 
+      key={project._id} 
+      className="relative group cursor-pointer"
+      onClick={() => navigate(`/project/${project._id}`, { state: { project } })}
+    >
       <div
-        className={`border rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-300 hover:scale-105 cursor-pointer ${
+        className={`border rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-300 hover:scale-105 ${
           isDarkMode
             ? "border-gray-700/50 hover:shadow-lg hover:bg-gray-800/70"
             : "border-gray-200 shadow-md hover:shadow-xl bg-white/90 hover:bg-white"
@@ -325,56 +329,14 @@ const handleSaveProject = async (e) => {
           backgroundColor: isDarkMode ? "rgba(26,26,46,0.8)" : undefined,
         }}
       >
-        <div
-          className={`p-4 border-b ${
-            isDarkMode ? "border-gray-700/50" : "border-gray-200"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <div
-              className={`font-semibold text-lg ${
-                isDarkMode ? "text-white" : "text-gray-800"
-              }`}
-            >
-              {project.name}
-            </div>
+        <div className="p-4 border-b">
+          <div className="font-semibold text-lg">
+            {project.name}
           </div>
         </div>
         <div className="p-4 space-y-2">
-          <div className="flex items-center justify-between">
-            <span
-              className={`text-sm font-medium ${
-                isDarkMode ? "text-gray-300" : "text-gray-600"
-              }`}
-            >
-              Deadline:
-            </span>
-            <span
-              className={`text-sm font-semibold ${
-                isDarkMode ? "text-white" : "text-gray-800"
-              }`}
-            >
-              {project.deadline
-                ? new Date(project.deadline).toLocaleDateString()
-                : "No deadline"}
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span
-              className={`text-sm font-medium ${
-                isDarkMode ? "text-gray-300" : "text-gray-600"
-              }`}
-            >
-              Priority:
-            </span>
-            <span
-              className={`text-sm font-semibold ${
-                isDarkMode ? "text-white" : "text-gray-800"
-              }`}
-            >
-              {project.priority}
-            </span>
-          </div>
+          <p>Deadline: {project.deadline ? new Date(project.deadline).toLocaleDateString() : "No deadline"}</p>
+          <p>Priority: {project.priority}</p>
         </div>
       </div>
     </div>
@@ -430,16 +392,7 @@ const handleSaveProject = async (e) => {
                   />
                 </div>
 
-                <div>
-                  <label className="block mb-1 font-semibold">Project Manager</label>
-                  <input
-                    type="text"
-                    value={user?.id || ""}
-                    disabled
-                    className="w-full px-4 py-2 rounded-lg border bg-gray-200 text-gray-700"
-                  />
-                </div>
-
+                
                 <div>
                   <label className="block mb-1 font-semibold">Deadline</label>
                   <input
