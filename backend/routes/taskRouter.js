@@ -4,8 +4,9 @@ const router = express.Router();
 
 const isLogged = require("../middlewares/isLoggedin");
 
-router.get('/create', isLogged, createTask);
-router.get('/edit', isLogged, editTask);
+router.post('/create', isLogged, createTask);
+router.put('/edit/:id', isLogged, editTask);
 router.get('/view', isLogged, viewTask);
+router.delete("/:id", isLogged, deleteTask);
 
 module.exports = router;
