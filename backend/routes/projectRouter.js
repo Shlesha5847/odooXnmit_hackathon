@@ -1,11 +1,11 @@
 const express = require('express');
-const {createProject , editProject, viewProject} = require('../controllers/projectController');
+const {createProject , getProjects , getProjectById ,updateProject} = require('../controllers/projectController');
 const router = express.Router();
 
-const isLogged = require("./middlewares/isLoggedin");
+const isLogged = require("../middlewares/isLoggedin");
 
 router.get('/create', isLogged, createProject);
-router.get('/edit', isLogged, editProject);
-router.get('/view', isLogged, viewProject);
+router.get('/edit', isLogged, updateProject);
+router.get('/view', isLogged, getProjects);
 
 module.exports = router;
