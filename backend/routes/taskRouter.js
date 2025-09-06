@@ -1,5 +1,5 @@
 const express = require('express');
-const {createTask , editTask, viewTask} = require('../controllers/taskController');
+const {createTask , editTask, viewTask, deleteTask} = require('../controllers/taskController');
 const router = express.Router();
 
 const isLogged = require("../middlewares/isLoggedin");
