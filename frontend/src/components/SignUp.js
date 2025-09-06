@@ -1,6 +1,6 @@
 // src/SignUpPage.js
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -10,6 +10,9 @@ export default function SignUpPage() {
     confirmPassword: "",
   });
 
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -18,9 +21,48 @@ export default function SignUpPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Signup submitted:", formData);
+    setError("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/signup", { // change to your backend route
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+        credentials: "include", // needed if backend uses cookies
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Signup failed");
+      }
+
+      console.log("Signup success:", data);
+
+      // Example: Save token if backend sends one
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      // Redirect to login after successful signup
+      navigate("/login");
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    }
   };
 
   return (
