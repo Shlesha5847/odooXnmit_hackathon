@@ -1,117 +1,86 @@
 import React, { useState } from "react";
 
-export default function ProjectDetail() {
+export default function ProjectDetails() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
   const [isTasksOpen, setIsTasksOpen] = useState(true);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-  const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
+  const [showNewTaskForm, setShowNewTaskForm] = useState(false);
+
   const [notifications, setNotifications] = useState([
-    { id: 1, text: "Task assigned to you", read: false },
-    { id: 2, text: "Project updated", read: false },
+    { id: 1, text: "New bug reported in Stripe Integration", read: false },
+    { id: 2, text: "Feedback added on Sales App task", read: false },
+    { id: 3, text: "Reminder: Project deadline tomorrow", read: false },
   ]);
 
-  const [newTask, setNewTask] = useState({
-    name: "",
-    assignee: "",
-    project: "RD Sales",
-    tags: "",
-    deadline: "",
-    description: "",
-  });
-
-  const [tasks, setTasks] = useState([
+  const tasks = [
     {
       id: 1,
       title: "Optimise Website Controllers",
       labels: ["Feedback", "Refactor"],
       date: "21/03/22",
-      assignedTo: ["Brilliant Cat", "Crafty Jaguar"],
+      assignedTo: ["Awesome Butterfly", "Crafty Jaguar"],
+      views: 14,
     },
     {
       id: 2,
-      title: "Remove Sales App",
+      title: "Remove Sales App 🗑️",
       labels: ["Feedback", "Delete"],
       date: "21/03/22",
-      assignedTo: ["Cool Salamander", "Echidna"],
+      assignedTo: ["Crafty Jaguar"],
+      views: 23,
     },
     {
       id: 3,
       title: "Stripe Integration",
       labels: ["Improvement", "Payment Provider"],
       date: "21/03/22",
-      assignedTo: ["Echidna"],
+      assignedTo: ["Aranya Bandhu"],
+      views: 31,
     },
-  ]);
-
-  const handleInputChange = (field, value) => {
-    setNewTask(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleSaveTask = () => {
-    if (newTask.name.trim()) {
-      const task = {
-        id: tasks.length + 1,
-        title: newTask.name,
-        labels: newTask.tags ? newTask.tags.split(',').map(tag => tag.trim()) : [],
-        date: newTask.deadline || new Date().toLocaleDateString('en-GB'),
-        assignedTo: newTask.assignee ? [newTask.assignee] : [],
-      };
-      
-      setTasks(prev => [...prev, task]);
-      setNewTask({
-        name: "",
-        assignee: "",
-        project: "RD Sales",
-        tags: "",
-        deadline: "",
-        description: "",
-      });
-      setIsNewTaskOpen(false);
-    }
-  };
-
-  const handleDiscardTask = () => {
-    setNewTask({
-      name: "",
-      assignee: "",
-      project: "RD Sales",
-      tags: "",
-      deadline: "",
-      description: "",
-    });
-    setIsNewTaskOpen(false);
-  };
+  ];
 
   return (
     <div
       className={`min-h-screen ${
         isDarkMode
           ? "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white"
-          : "bg-gray-100 text-gray-800"
+          : "bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 text-gray-900"
       }`}
     >
-      {/* Header Navigation */}
+      {/* Header */}
       <header
-        className="border border-gray-700/50 rounded-xl mx-6 mt-6 backdrop-blur-sm"
+        className={`border rounded-xl mx-6 mt-6 backdrop-blur-sm shadow-lg ${
+          isDarkMode ? "border-gray-700/50" : "border-white/80 shadow-white/50"
+        }`}
         style={{
-          backgroundColor: isDarkMode ? "rgba(26,26,46,0.8)" : "#fff",
+          backgroundColor: isDarkMode
+            ? "rgba(26,26,46,0.8)"
+            : "rgba(255,255,255,0.95)",
         }}
       >
         <div className="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg"></div>
+            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg shadow-md"></div>
             <h1
               className={`text-xl font-bold ${
                 isDarkMode ? "text-white" : "text-gray-800"
               }`}
             >
-              Project: RD Sales
+              Company
             </h1>
           </div>
+
+          {/* Search */}
+          <input
+            type="text"
+            placeholder="Search......."
+            className={`px-4 py-2 rounded-lg w-96 focus:outline-none ${
+              isDarkMode
+                ? "bg-gray-700 text-white placeholder-gray-400"
+                : "bg-gray-200 text-gray-900 placeholder-gray-600"
+            }`}
+          />
 
           {/* Right Controls */}
           <div className="flex items-center space-x-4 relative">
@@ -119,7 +88,7 @@ export default function ProjectDetail() {
             <div className="relative">
               <button
                 onClick={() => setIsNotifOpen(!isNotifOpen)}
-                className="relative px-3 py-2 bg-blue-600 rounded-lg text-white"
+                className="relative px-3 py-2 bg-blue-600 rounded-lg text-white shadow-md hover:bg-blue-700 transition-colors"
               >
                 🔔
                 {notifications.some((n) => !n.read) && (
@@ -128,15 +97,27 @@ export default function ProjectDetail() {
               </button>
 
               {isNotifOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-lg shadow-lg border border-gray-700/50 p-4 z-20">
+                <div
+                  className={`absolute right-0 mt-2 w-64 rounded-lg shadow-xl border p-4 z-20 ${
+                    isDarkMode
+                      ? "bg-gray-800 border-gray-700/50"
+                      : "bg-white border-gray-200 shadow-lg"
+                  }`}
+                >
                   {notifications.map((notif) => (
                     <div
                       key={notif.id}
                       className="flex items-center justify-between mb-2"
                     >
                       <span
-                        className={`text-white ${
-                          notif.read ? "line-through text-gray-400" : ""
+                        className={`${
+                          isDarkMode
+                            ? `text-white ${
+                                notif.read ? "line-through text-gray-400" : ""
+                              }`
+                            : `text-gray-800 ${
+                                notif.read ? "line-through text-gray-400" : ""
+                              }`
                         }`}
                       >
                         {notif.text}
@@ -144,13 +125,15 @@ export default function ProjectDetail() {
                       <input
                         type="checkbox"
                         checked={notif.read}
-                        onChange={() => {
+                        onChange={() =>
                           setNotifications(
                             notifications.map((n) =>
-                              n.id === notif.id ? { ...n, read: !n.read } : n
+                              n.id === notif.id
+                                ? { ...n, read: !n.read }
+                                : n
                             )
-                          );
-                        }}
+                          )
+                        }
                       />
                     </div>
                   ))}
@@ -159,23 +142,23 @@ export default function ProjectDetail() {
             </div>
 
             {/* Theme Toggle */}
-            <div className="flex space-x-1">
+            <div className="flex space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
               <button
                 onClick={() => setIsDarkMode(false)}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`p-2 rounded-lg transition-all duration-200 ${
                   !isDarkMode
-                    ? "bg-yellow-500 text-white"
-                    : "text-gray-400 hover:text-black"
+                    ? "bg-yellow-500 text-white shadow-md transform scale-105"
+                    : "text-gray-500 hover:text-yellow-500 hover:bg-yellow-50"
                 }`}
               >
                 ☀️
               </button>
               <button
                 onClick={() => setIsDarkMode(true)}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`p-2 rounded-lg transition-all duration-200 ${
                   isDarkMode
-                    ? "bg-purple-600 text-white"
-                    : "text-gray-400 hover:text-black"
+                    ? "bg-purple-600 text-white shadow-md transform scale-105"
+                    : "text-gray-500 hover:text-purple-600 hover:bg-purple-50"
                 }`}
               >
                 🌙
@@ -185,43 +168,52 @@ export default function ProjectDetail() {
         </div>
       </header>
 
+      {/* Body */}
       <div className="flex">
         {/* Sidebar */}
         <aside className="w-64 p-6">
           <div className="space-y-2">
+            {/* Projects */}
             <button
               onClick={() => setIsProjectsOpen(!isProjectsOpen)}
-              className="w-full text-left px-4 py-3 text-white bg-purple-600/20 rounded-lg border border-purple-500/30 mt-4 flex justify-between items-center"
+              className={`w-full text-left px-4 py-3 rounded-lg mt-4 flex justify-between items-center transition-all duration-200 ${
+                isDarkMode
+                  ? "text-white bg-purple-600/20 border border-purple-500/30 hover:bg-purple-600/30"
+                  : "text-gray-800 bg-purple-100 border border-purple-200 hover:bg-purple-200 shadow-sm"
+              }`}
             >
               Projects
-              <span>{isProjectsOpen ? "−" : "+"}</span>
+              <span
+                className={`font-bold ${
+                  isProjectsOpen ? "text-purple-300" : "text-purple-600"
+                }`}
+              >
+                {isProjectsOpen ? "−" : "+"}
+              </span>
             </button>
             {isProjectsOpen && (
               <div className="pl-4 mt-2 space-y-1">
-                <p className="text-gray-300 hover:text-white cursor-pointer">
-                  RD Sales
-                </p>
-                <p className="text-gray-300 hover:text-white cursor-pointer">
-                  Subtle Boar
-                </p>
+                <p className="cursor-pointer">RD Sales</p>
+                <p className="cursor-pointer">Subtle Boar</p>
               </div>
             )}
 
+            {/* My Tasks */}
             <button
               onClick={() => setIsTasksOpen(!isTasksOpen)}
-              className="w-full text-left px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors flex justify-between items-center"
+              className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex justify-between items-center ${
+                isDarkMode
+                  ? "text-gray-300 hover:text-white hover:bg-white/5"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 border border-gray-200"
+              }`}
             >
               My Tasks
               <span>{isTasksOpen ? "−" : "+"}</span>
             </button>
             {isTasksOpen && (
               <div className="pl-4 mt-2 space-y-1">
-                <p className="text-gray-300 hover:text-white cursor-pointer">
-                  Task 1
-                </p>
-                <p className="text-gray-300 hover:text-white cursor-pointer">
-                  Task 2
-                </p>
+                <p className="cursor-pointer">Task 1</p>
+                <p className="cursor-pointer">Task 2</p>
               </div>
             )}
           </div>
@@ -229,247 +221,159 @@ export default function ProjectDetail() {
 
         {/* Main Content */}
         <main className="flex-1 p-6">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-3">
-              <span className="text-gray-400 text-lg">→</span>
-              <h2
-                className={`text-2xl font-bold ${
-                  isDarkMode ? "text-white" : "text-gray-800"
-                }`}
-              >
-                RD Sales Tasks
-              </h2>
-            </div>
-            <button 
-              onClick={() => setIsNewTaskOpen(true)}
-              className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              + New Task
-            </button>
-          </div>
-
-          {/* Task Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            {tasks.map((task) => (
-              <div
-                key={task.id}
-                className="border border-gray-700/50 rounded-2xl p-4 bg-gray-800/50 backdrop-blur-sm hover:scale-105 hover:shadow-lg transition"
-              >
-                <div className="flex space-x-2 mb-2">
-                  {task.labels.map((label, index) => (
-                    <span
-                      key={index}
-                      className="text-xs px-2 py-1 rounded-full bg-purple-600/70"
-                    >
-                      {label}
-                    </span>
-                  ))}
-                </div>
-
-                <h3 className="font-semibold mb-2">{task.title}</h3>
-
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {task.assignedTo.map((user, idx) => (
-                    <div
-                      key={idx}
-                      className="px-2 py-1 rounded-lg bg-blue-600 text-white text-xs"
-                    >
-                      {user}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex justify-between text-sm text-gray-400">
-                  <span>{task.date}</span>
-                  <span>👁 {Math.floor(Math.random() * 50)} views</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </main>
-      </div>
-
-      {/* New Task Modal - Full Page Overlay */}
-      {isNewTaskOpen && (
-        <div className="fixed inset-0 bg-gray-900 z-50">
-          {/* Top Border */}
-          <div className="h-1 border-t-2 border-white"></div>
-          
-          <div className="h-full flex">
-            {/* Sidebar */}
-            <aside className="w-64 border-r-2 border-white relative">
-              {/* Company Header */}
-              <div className="p-6 border-b-2 border-white">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 border border-white rounded"></div>
-                  <span className="text-white text-lg">Company</span>
-                </div>
-              </div>
-              
-              {/* Navigation */}
-              <div className="p-6 space-y-2">
-                <button className="w-full text-left text-white text-lg py-2">
-                  Projects
-                </button>
-                <button className="w-full text-left text-white text-lg py-2">
-                  My Tasks
+          {!showNewTaskForm ? (
+            <>
+              {/* Header Row */}
+              <div className="flex items-center justify-between mb-8">
+                <h2
+                  className={`text-2xl font-bold ${
+                    isDarkMode ? "text-white" : "text-gray-800"
+                  }`}
+                >
+                  ➤ Projects ➤ RD Sales
+                </h2>
+                <button
+                  onClick={() => setShowNewTaskForm(true)}
+                  className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 text-white shadow-md hover:shadow-lg transform hover:scale-105"
+                >
+                  + New Task
                 </button>
               </div>
 
-              {/* Theme Toggle */}
-              <div className="absolute bottom-20 left-6">
-                <div className="flex space-x-1 bg-white p-1 rounded">
-                  <button
-                    onClick={() => setIsDarkMode(false)}
-                    className={`p-2 rounded transition-colors ${
-                      !isDarkMode
-                        ? "bg-yellow-500 text-white"
-                        : "text-gray-400 hover:text-white"
-                    }`}
-                  >
-                    ☀️
-                  </button>
-                  <button
-                    onClick={() => setIsDarkMode(true)}
-                    className={`p-2 rounded transition-colors ${
+              {/* Tasks Grid */}
+              <div className="grid md:grid-cols-3 gap-6">
+                {tasks.map((task) => (
+                  <div
+                    key={task.id}
+                    className={`p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ${
                       isDarkMode
-                        ? "bg-gray-800 text-white"
-                        : "text-gray-400 hover:text-white"
+                        ? "bg-gray-800/80 border border-gray-700"
+                        : "bg-white border border-gray-200"
                     }`}
                   >
-                    🌙
+                    {/* Labels */}
+                    <div className="flex space-x-2 mb-2">
+                      {task.labels.map((label, i) => (
+                        <span
+                          key={i}
+                          className="text-xs px-2 py-1 rounded-full bg-purple-600 text-white"
+                        >
+                          {label}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="font-semibold mb-3">{task.title}</h3>
+
+                    {/* Assigned To */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {task.assignedTo.map((user, i) => (
+                        <span
+                          key={i}
+                          className="px-2 py-1 bg-blue-600 text-white text-xs rounded-lg"
+                        >
+                          {user}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="flex justify-between text-sm text-gray-400">
+                      <span>{task.date}</span>
+                      <span>👁 {task.views} views</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              {/* New Task Form */}
+              <div className="flex items-center justify-between mb-8">
+                <h2
+                  className={`text-2xl font-bold ${
+                    isDarkMode ? "text-white" : "text-gray-800"
+                  }`}
+                >
+                  New Task
+                </h2>
+                <div className="space-x-2">
+                  <button
+                    onClick={() => setShowNewTaskForm(false)}
+                    className="px-4 py-2 bg-gray-500 rounded-lg hover:bg-gray-600 text-white shadow-md"
+                  >
+                    Discard
+                  </button>
+                  <button className="px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700 text-white shadow-md">
+                    Save
                   </button>
                 </div>
               </div>
 
-              {/* User Info */}
-              <div className="absolute bottom-6 left-6 flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm">U</span>
-                </div>
+              <form className="space-y-6 max-w-2xl">
                 <div>
-                  <div className="text-white text-sm">Test User</div>
-                  <div className="text-gray-400 text-xs">user@mail.com</div>
-                </div>
-                <button className="text-gray-400 hover:text-white">
-                  ...
-                </button>
-              </div>
-            </aside>
-
-            {/* Main Content */}
-            <main className="flex-1 border-r-2 border-white">
-              {/* Header */}
-              <header className="border-b-2 border-white px-8 py-4">
-                <div className="flex items-center justify-between">
+                  <label className="block mb-1 font-semibold">Title</label>
                   <input
                     type="text"
-                    placeholder="Search......."
-                    className="bg-transparent border border-gray-600 rounded px-4 py-2 text-white placeholder-gray-400 focus:border-white focus:outline-none"
+                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
                   />
-                  <div className="text-white">
-                    <span>➤ Projects ➤ New Task</span>
-                  </div>
-                  <div className="flex space-x-3">
-                    <button
-                      onClick={handleDiscardTask}
-                      className="px-4 py-2 border border-blue-500 text-blue-400 rounded hover:bg-blue-500/10 transition-colors"
-                    >
-                      Discard
-                    </button>
-                    <button
-                      onClick={handleSaveTask}
-                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-                    >
-                      Save
-                    </button>
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">Labels</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
+                    placeholder="Bug, Urgent, Feature..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">Assign To</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">Deadline</label>
+                  <input
+                    type="date"
+                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">Priority</label>
+                  <div className="space-x-4">
+                    <label>
+                      <input type="radio" name="priority" /> Low
+                    </label>
+                    <label>
+                      <input type="radio" name="priority" /> Medium
+                    </label>
+                    <label>
+                      <input type="radio" name="priority" /> High
+                    </label>
                   </div>
                 </div>
-              </header>
 
-              {/* Form Content */}
-              <div className="px-8 py-8">
-                <div className="space-y-8">
-                  {/* Name */}
-                  <div>
-                    <label className="block text-white text-xl mb-4 font-light">Name</label>
-                    <input
-                      type="text"
-                      value={newTask.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                      className="w-full bg-transparent border-b-2 border-white pb-3 text-white focus:outline-none text-lg"
-                    />
-                  </div>
-
-                  {/* Assignee */}
-                  <div>
-                    <label className="block text-white text-xl mb-4 font-light">Assignee</label>
-                    <input
-                      type="text"
-                      value={newTask.assignee}
-                      onChange={(e) => handleInputChange('assignee', e.target.value)}
-                      className="w-full bg-transparent border-b-2 border-white pb-3 text-white focus:outline-none text-lg"
-                    />
-                  </div>
-
-                  {/* Project */}
-                  <div>
-                    <label className="block text-white text-xl mb-4 font-light">Project</label>
-                    <input
-                      type="text"
-                      value={newTask.project}
-                      onChange={(e) => handleInputChange('project', e.target.value)}
-                      className="w-full bg-transparent border-b-2 border-white pb-3 text-white focus:outline-none text-lg"
-                    />
-                  </div>
-
-                  {/* Tags */}
-                  <div>
-                    <label className="block text-white text-xl mb-4 font-light">Tags</label>
-                    <input
-                      type="text"
-                      value={newTask.tags}
-                      onChange={(e) => handleInputChange('tags', e.target.value)}
-                      className="w-full bg-transparent border-b-2 border-white pb-3 text-white focus:outline-none text-lg"
-                    />
-                  </div>
-
-                  {/* Deadline */}
-                  <div>
-                    <label className="block text-white text-xl mb-4 font-light">Deadline</label>
-                    <input
-                      type="date"
-                      value={newTask.deadline}
-                      onChange={(e) => handleInputChange('deadline', e.target.value)}
-                      className="w-full bg-transparent border-b-2 border-white pb-3 text-white focus:outline-none text-lg"
-                    />
-                  </div>
-
-                  {/* Image */}
-                  <div>
-                    <label className="block text-white text-xl mb-4 font-light">Image</label>
-                    <button className="flex items-center space-x-2 px-4 py-2 border border-white rounded text-white hover:bg-white hover:text-black transition-colors">
-                      <span>📎</span>
-                      <span>Upload Image</span>
-                    </button>
-                  </div>
-
-                  {/* Description */}
-                  <div>
-                    <label className="block text-white text-xl mb-4 font-light">Description</label>
-                    <textarea
-                      value={newTask.description}
-                      onChange={(e) => handleInputChange('description', e.target.value)}
-                      rows={6}
-                      className="w-full bg-transparent border-2 border-white rounded-lg p-4 text-white focus:outline-none resize-none text-lg"
-                    />
-                  </div>
+                {/* Description */}
+                <div>
+                  <label className="block mb-1 font-semibold">Description</label>
+                  <textarea
+                    rows="4"
+                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
+                    placeholder="Enter task details..."
+                  ></textarea>
                 </div>
-              </div>
-            </main>
-          </div>
-        </div>
-      )}
+              </form>
+            </>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

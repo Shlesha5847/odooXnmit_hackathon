@@ -5,6 +5,8 @@ export default function MyTasks() {
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
   const [isTasksOpen, setIsTasksOpen] = useState(true);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [showNewTaskForm, setShowNewTaskForm] = useState(false);
+
   const [notifications, setNotifications] = useState([
     { id: 1, text: "Deadline approaching!", read: false },
     { id: 2, text: "New comment on Task 2", read: false },
@@ -45,12 +47,12 @@ export default function MyTasks() {
       {/* Header */}
       <header
         className={`border rounded-xl mx-6 mt-6 backdrop-blur-sm shadow-lg ${
-          isDarkMode 
-            ? "border-gray-700/50" 
-            : "border-white/80 shadow-white/50"
+          isDarkMode ? "border-gray-700/50" : "border-white/80 shadow-white/50"
         }`}
         style={{
-          backgroundColor: isDarkMode ? "rgba(26,26,46,0.8)" : "rgba(255,255,255,0.95)",
+          backgroundColor: isDarkMode
+            ? "rgba(26,26,46,0.8)"
+            : "rgba(255,255,255,0.95)",
         }}
       >
         <div className="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
@@ -80,11 +82,13 @@ export default function MyTasks() {
               </button>
 
               {isNotifOpen && (
-                <div className={`absolute right-0 mt-2 w-64 rounded-lg shadow-xl border p-4 z-20 ${
-                  isDarkMode 
-                    ? "bg-gray-800 border-gray-700/50" 
-                    : "bg-white border-gray-200 shadow-lg"
-                }`}>
+                <div
+                  className={`absolute right-0 mt-2 w-64 rounded-lg shadow-xl border p-4 z-20 ${
+                    isDarkMode
+                      ? "bg-gray-800 border-gray-700/50"
+                      : "bg-white border-gray-200 shadow-lg"
+                  }`}
+                >
                   {notifications.map((notif) => (
                     <div
                       key={notif.id}
@@ -92,9 +96,13 @@ export default function MyTasks() {
                     >
                       <span
                         className={`${
-                          isDarkMode 
-                            ? `text-white ${notif.read ? "line-through text-gray-400" : ""}`
-                            : `text-gray-800 ${notif.read ? "line-through text-gray-400" : ""}`
+                          isDarkMode
+                            ? `text-white ${
+                                notif.read ? "line-through text-gray-400" : ""
+                              }`
+                            : `text-gray-800 ${
+                                notif.read ? "line-through text-gray-400" : ""
+                              }`
                         }`}
                       >
                         {notif.text}
@@ -105,7 +113,9 @@ export default function MyTasks() {
                         onChange={() => {
                           setNotifications(
                             notifications.map((n) =>
-                              n.id === notif.id ? { ...n, read: !n.read } : n
+                              n.id === notif.id
+                                ? { ...n, read: !n.read }
+                                : n
                             )
                           );
                         }}
@@ -156,24 +166,32 @@ export default function MyTasks() {
               }`}
             >
               Projects
-              <span className={`font-bold ${isDarkMode ? "text-purple-300" : "text-purple-600"}`}>
+              <span
+                className={`font-bold ${
+                  isProjectsOpen ? "text-purple-300" : "text-purple-600"
+                }`}
+              >
                 {isProjectsOpen ? "−" : "+"}
               </span>
             </button>
             {isProjectsOpen && (
               <div className="pl-4 mt-2 space-y-1">
-                <p className={`cursor-pointer transition-colors ${
-                  isDarkMode 
-                    ? "text-gray-300 hover:text-white" 
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded px-2 py-1"
-                }`}>
+                <p
+                  className={`cursor-pointer transition-colors ${
+                    isDarkMode
+                      ? "text-gray-300 hover:text-white"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded px-2 py-1"
+                  }`}
+                >
                   RD Sales
                 </p>
-                <p className={`cursor-pointer transition-colors ${
-                  isDarkMode 
-                    ? "text-gray-300 hover:text-white" 
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded px-2 py-1"
-                }`}>
+                <p
+                  className={`cursor-pointer transition-colors ${
+                    isDarkMode
+                      ? "text-gray-300 hover:text-white"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded px-2 py-1"
+                  }`}
+                >
                   Subtle Boar
                 </p>
               </div>
@@ -188,24 +206,32 @@ export default function MyTasks() {
               }`}
             >
               My Tasks
-              <span className={`font-bold ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <span
+                className={`font-bold ${
+                  isTasksOpen ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
                 {isTasksOpen ? "−" : "+"}
               </span>
             </button>
             {isTasksOpen && (
               <div className="pl-4 mt-2 space-y-1">
-                <p className={`cursor-pointer transition-colors ${
-                  isDarkMode 
-                    ? "text-gray-300 hover:text-white" 
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded px-2 py-1"
-                }`}>
+                <p
+                  className={`cursor-pointer transition-colors ${
+                    isDarkMode
+                      ? "text-gray-300 hover:text-white"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded px-2 py-1"
+                  }`}
+                >
                   Task 1
                 </p>
-                <p className={`cursor-pointer transition-colors ${
-                  isDarkMode 
-                    ? "text-gray-300 hover:text-white" 
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded px-2 py-1"
-                }`}>
+                <p
+                  className={`cursor-pointer transition-colors ${
+                    isDarkMode
+                      ? "text-gray-300 hover:text-white"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded px-2 py-1"
+                  }`}
+                >
                   Task 2
                 </p>
               </div>
@@ -215,85 +241,183 @@ export default function MyTasks() {
 
         {/* Main Content */}
         <main className="flex-1 p-6">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-3">
-              <span className={`text-lg ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>→</span>
-              <h2
-                className={`text-2xl font-bold ${
-                  isDarkMode ? "text-white" : "text-gray-800"
-                }`}
-              >
-                My Tasks
-              </h2>
-            </div>
-            <button className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 text-white shadow-md hover:shadow-lg transform hover:scale-105">
-              + New Task
-            </button>
-          </div>
-
-          {/* Task Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            {tasks.map((task) => (
-              <div
-                key={task.id}
-                className={`border rounded-2xl p-4 backdrop-blur-sm hover:scale-105 transition-all duration-300 cursor-pointer ${
-                  isDarkMode
-                    ? "border-gray-700/50 bg-gray-800/50 hover:shadow-lg hover:bg-gray-800/70"
-                    : "border-gray-200 bg-white/90 shadow-md hover:shadow-xl hover:bg-white"
-                }`}
-              >
-                <div className="flex space-x-2 mb-3">
-                  {task.labels.map((label, index) => (
-                    <span
-                      key={index}
-                      className={`text-xs px-3 py-1 rounded-full font-medium ${
-                        isDarkMode
-                          ? "bg-purple-600/70 text-white"
-                          : label === "High Priority" || label === "Urgent"
-                            ? "bg-red-100 text-red-700 border border-red-200"
-                            : label === "Bug"
-                            ? "bg-orange-100 text-orange-700 border border-orange-200"
-                            : "bg-blue-100 text-blue-700 border border-blue-200"
-                      }`}
-                    >
-                      {label}
-                    </span>
-                  ))}
-                </div>
-
-                <h3 className={`font-semibold mb-3 text-lg ${
-                  isDarkMode ? "text-white" : "text-gray-800"
-                }`}>
-                  {task.title}
-                </h3>
-
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {task.assignedTo.map((user, idx) => (
-                    <div
-                      key={idx}
-                      className={`px-3 py-1 rounded-lg text-xs font-medium ${
-                        isDarkMode
-                          ? "bg-blue-600 text-white"
-                          : "bg-blue-600 text-white shadow-sm"
-                      }`}
-                    >
-                      {user}
-                    </div>
-                  ))}
-                </div>
-
-                <div className={`flex justify-between text-sm ${
-                  isDarkMode ? "text-gray-400" : "text-gray-600"
-                }`}>
-                  <span className="font-medium">{task.date}</span>
-                  <span className="flex items-center space-x-1">
-                    <span>👁</span>
-                    <span>{Math.floor(Math.random() * 50)} views</span>
+          {!showNewTaskForm ? (
+            <>
+              {/* Tasks List Page */}
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center space-x-3">
+                  <span
+                    className={`text-lg ${
+                      isDarkMode ? "text-gray-400" : "text-gray-500"
+                    }`}
+                  >
+                    →
                   </span>
+                  <h2
+                    className={`text-2xl font-bold ${
+                      isDarkMode ? "text-white" : "text-gray-800"
+                    }`}
+                  >
+                    My Tasks
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setShowNewTaskForm(true)}
+                  className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 text-white shadow-md hover:shadow-lg transform hover:scale-105"
+                >
+                  + New Task
+                </button>
+              </div>
+
+              {/* Tasks Grid */}
+              <div className="grid md:grid-cols-3 gap-6 mb-8">
+                {tasks.map((task) => (
+                  <div
+                    key={task.id}
+                    className={`border rounded-2xl p-4 backdrop-blur-sm hover:scale-105 transition-all duration-300 cursor-pointer ${
+                      isDarkMode
+                        ? "border-gray-700/50 bg-gray-800/50 hover:shadow-lg hover:bg-gray-800/70"
+                        : "border-gray-200 bg-white/90 shadow-md hover:shadow-xl hover:bg-white"
+                    }`}
+                  >
+                    <div className="flex space-x-2 mb-3">
+                      {task.labels.map((label, index) => (
+                        <span
+                          key={index}
+                          className={`text-xs px-3 py-1 rounded-full font-medium ${
+                            isDarkMode
+                              ? "bg-purple-600/70 text-white"
+                              : label === "High Priority" || label === "Urgent"
+                              ? "bg-red-100 text-red-700 border border-red-200"
+                              : label === "Bug"
+                              ? "bg-orange-100 text-orange-700 border border-orange-200"
+                              : "bg-blue-100 text-blue-700 border border-blue-200"
+                          }`}
+                        >
+                          {label}
+                        </span>
+                      ))}
+                    </div>
+
+                    <h3
+                      className={`font-semibold mb-3 text-lg ${
+                        isDarkMode ? "text-white" : "text-gray-800"
+                      }`}
+                    >
+                      {task.title}
+                    </h3>
+
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {task.assignedTo.map((user, idx) => (
+                        <div
+                          key={idx}
+                          className={`px-3 py-1 rounded-lg text-xs font-medium ${
+                            isDarkMode
+                              ? "bg-blue-600 text-white"
+                              : "bg-blue-600 text-white shadow-sm"
+                          }`}
+                        >
+                          {user}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div
+                      className={`flex justify-between text-sm ${
+                        isDarkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
+                      <span className="font-medium">{task.date}</span>
+                      <span className="flex items-center space-x-1">
+                        <span>👁</span>
+                        <span>{Math.floor(Math.random() * 50)} views</span>
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              {/* New Task Form */}
+              <div className="flex items-center justify-between mb-8">
+                <h2
+                  className={`text-2xl font-bold ${
+                    isDarkMode ? "text-white" : "text-gray-800"
+                  }`}
+                >
+                  New Task
+                </h2>
+                <div className="space-x-2">
+                  <button
+                    onClick={() => setShowNewTaskForm(false)}
+                    className="px-4 py-2 bg-gray-500 rounded-lg hover:bg-gray-600 text-white shadow-md"
+                  >
+                    Discard
+                  </button>
+                  <button className="px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700 text-white shadow-md">
+                    Save
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
+
+              <form className="space-y-6 max-w-2xl">
+                <div>
+                  <label className="block mb-1 font-semibold">Name</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">Assignee</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">Project</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">Tags</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">Deadline</label>
+                  <input
+                    type="date"
+                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">Image</label>
+                  <input type="file" className="w-full" />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">Description</label>
+                  <textarea
+                    rows="4"
+                    className="w-full px-4 py-2 rounded-lg border bg-transparent"
+                    placeholder="Enter task details..."
+                  ></textarea>
+                </div>
+              </form>
+            </>
+          )}
         </main>
       </div>
     </div>
