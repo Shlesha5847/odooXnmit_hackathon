@@ -1,36 +1,36 @@
 import React, { useState } from "react";
 
-export default function ProjectDetail() {
+export default function MyTasks() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
   const [isTasksOpen, setIsTasksOpen] = useState(true);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState([
-    { id: 1, text: "Task assigned to you", read: false },
-    { id: 2, text: "Project updated", read: false },
+    { id: 1, text: "Deadline approaching!", read: false },
+    { id: 2, text: "New comment on Task 2", read: false },
   ]);
 
   const tasks = [
     {
       id: 1,
-      title: "Optimise Website Controllers",
-      labels: ["Feedback", "Refactor"],
-      date: "21/03/22",
-      assignedTo: ["Brilliant Cat", "Crafty Jaguar"],
+      title: "Prepare Presentation",
+      labels: ["High Priority", "Work"],
+      date: "22/03/22",
+      assignedTo: ["Innocent Penguin", "Powerful Baboon"],
     },
     {
       id: 2,
-      title: "Remove Sales App",
-      labels: ["Feedback", "Delete"],
-      date: "21/03/22",
-      assignedTo: ["Cool Salamander", "Echidna"],
+      title: "Fix Dashboard Bugs",
+      labels: ["Bug", "Urgent"],
+      date: "23/03/22",
+      assignedTo: ["Crafty Jaguar"],
     },
     {
       id: 3,
-      title: "Stripe Integration",
-      labels: ["Improvement", "Payment Provider"],
-      date: "21/03/22",
-      assignedTo: ["Echidna"],
+      title: "Design Mockups",
+      labels: ["UI/UX", "Feedback"],
+      date: "25/03/22",
+      assignedTo: ["Cool Salamander"],
     },
   ];
 
@@ -42,7 +42,7 @@ export default function ProjectDetail() {
           : "bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 text-gray-900"
       }`}
     >
-      {/* Header Navigation */}
+      {/* Header */}
       <header
         className={`border rounded-xl mx-6 mt-6 backdrop-blur-sm shadow-lg ${
           isDarkMode 
@@ -61,7 +61,7 @@ export default function ProjectDetail() {
                 isDarkMode ? "text-white" : "text-gray-800"
               }`}
             >
-              Project: RD Sales
+              Company
             </h1>
           </div>
 
@@ -223,7 +223,7 @@ export default function ProjectDetail() {
                   isDarkMode ? "text-white" : "text-gray-800"
                 }`}
               >
-                RD Sales Tasks
+                My Tasks
               </h2>
             </div>
             <button className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 text-white shadow-md hover:shadow-lg transform hover:scale-105">
@@ -249,14 +249,10 @@ export default function ProjectDetail() {
                       className={`text-xs px-3 py-1 rounded-full font-medium ${
                         isDarkMode
                           ? "bg-purple-600/70 text-white"
-                          : label === "Delete"
+                          : label === "High Priority" || label === "Urgent"
                             ? "bg-red-100 text-red-700 border border-red-200"
-                            : label === "Feedback"
+                            : label === "Bug"
                             ? "bg-orange-100 text-orange-700 border border-orange-200"
-                            : label === "Refactor"
-                            ? "bg-yellow-100 text-yellow-700 border border-yellow-200"
-                            : label === "Improvement"
-                            ? "bg-green-100 text-green-700 border border-green-200"
                             : "bg-blue-100 text-blue-700 border border-blue-200"
                       }`}
                     >
@@ -297,50 +293,6 @@ export default function ProjectDetail() {
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Project Statistics */}
-          <div className="mt-8 grid md:grid-cols-4 gap-4">
-            <div className={`p-4 rounded-lg ${
-              isDarkMode ? "bg-gray-800/50 border border-gray-700/50" : "bg-white shadow-md border border-gray-200"
-            }`}>
-              <div className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"}`}>
-                {tasks.length}
-              </div>
-              <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-                Total Tasks
-              </div>
-            </div>
-            <div className={`p-4 rounded-lg ${
-              isDarkMode ? "bg-gray-800/50 border border-gray-700/50" : "bg-white shadow-md border border-gray-200"
-            }`}>
-              <div className={`text-2xl font-bold ${isDarkMode ? "text-green-400" : "text-green-600"}`}>
-                2
-              </div>
-              <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-                Completed
-              </div>
-            </div>
-            <div className={`p-4 rounded-lg ${
-              isDarkMode ? "bg-gray-800/50 border border-gray-700/50" : "bg-white shadow-md border border-gray-200"
-            }`}>
-              <div className={`text-2xl font-bold ${isDarkMode ? "text-yellow-400" : "text-yellow-600"}`}>
-                1
-              </div>
-              <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-                In Progress
-              </div>
-            </div>
-            <div className={`p-4 rounded-lg ${
-              isDarkMode ? "bg-gray-800/50 border border-gray-700/50" : "bg-white shadow-md border border-gray-200"
-            }`}>
-              <div className={`text-2xl font-bold ${isDarkMode ? "text-purple-400" : "text-purple-600"}`}>
-                5
-              </div>
-              <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-                Team Members
-              </div>
-            </div>
           </div>
         </main>
       </div>
